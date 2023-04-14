@@ -15,7 +15,7 @@ async function tokoped(product, end) {
         .then(({ data }) => {
           const $ = cheerio.load(data);
           if($('div.css-1vknpta > div.css-ovjotx > div.css-y5gcsw > div.css-5fmc3z > div.css-qa82pd > div.prd_container-card.css-1c4umxf > div.pcv3__container.css-gfx8z3').length < 1) {
-            return Promise.reject('Produk Tidak Ditemukan'); // reject the promise if the end of results is found
+            return Promise.reject('Produk Tidak Ditemukan');
           }
           const judul = [];
           const harga = [];
