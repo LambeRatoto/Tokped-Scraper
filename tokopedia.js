@@ -1,11 +1,19 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const readline = require('readline');
 const fs = require('fs');
+
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 
 async function tokoped(product, end) {
   console.time('Scraping Time');
   const promises = await [];
-  for (let page = 1; page <= (end && end > 0 ? end : 20); page += 1) {
+  for (let page = 1; page <= (end && end > 0 ? end : 10); page += 1) {
     promises.push(
         /*
         axios.get(`https://www.tokopedia.com/find/${product.replace(/\s+/g, '-')}?page=${page}`, {
@@ -84,9 +92,13 @@ async function tokoped(product, end) {
     });
 }
 
+rl.question('Nama Produk? ', (product) => {
+  rl.question('Berapa banyak produk?\n1 = 10 Produk ', (hm) => {
+  console.log(`Scraping ${product} sejumlah ${hm}0 ...`);
+
 let tokped;
 const start = Date.now();
-tokoped('earphone')
+tokoped(product, hm)
   .then((result) => {
     const end = Date.now();
     const elapsed = end - start;
@@ -108,9 +120,11 @@ tokoped('earphone')
   .finally(() => {
     return new Promise((resolve) => {
       const jsonResult = JSON.stringify(tokped, null, 2);
-      fs.writeFileSync('./output/tokped.json', jsonResult);
-      console.log(`Saved ${tokped.result.length} Scrape to tokped.json`);
+      fs.writeFileSync(`./output/${product.replace(/\s+/g, '_')}.json`, jsonResult);
+      console.log(`Saved ${tokped.result.length} Scrape to ${product.replace(/\s+/g, '_')}.json`);
       resolve();
     });
   });
-
+  rl.close();
+});
+});
